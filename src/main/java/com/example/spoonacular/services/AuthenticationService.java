@@ -5,8 +5,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.spoonacular.dtos.LoginUserDto;
-import com.example.spoonacular.dtos.RegisterUserDto;
+import com.example.spoonacular.dtos.request.LoginUserDto;
+import com.example.spoonacular.dtos.request.RegisterUserDto;
 import com.example.spoonacular.models.User;
 import com.example.spoonacular.repositories.UserRepository;
 

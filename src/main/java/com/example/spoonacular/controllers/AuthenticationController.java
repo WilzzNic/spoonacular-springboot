@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.spoonacular.dtos.LoginResponse;
-import com.example.spoonacular.dtos.LoginUserDto;
-import com.example.spoonacular.dtos.RegisterUserDto;
+import com.example.spoonacular.dtos.request.LoginUserDto;
+import com.example.spoonacular.dtos.request.RegisterUserDto;
+import com.example.spoonacular.dtos.response.LoginResponse;
 import com.example.spoonacular.models.User;
 import com.example.spoonacular.services.AuthenticationService;
 import com.example.spoonacular.services.JwtService;
@@ -44,4 +44,5 @@ public class AuthenticationController {
 
         return ResponseEntity.ok(loginResponse);
     }
+
 }

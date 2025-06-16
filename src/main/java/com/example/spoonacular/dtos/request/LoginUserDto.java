@@ -1,4 +1,4 @@
-package com.example.spoonacular.dtos;
+package com.example.spoonacular.dtos.request;
 
 public class LoginUserDto {
     private String username;

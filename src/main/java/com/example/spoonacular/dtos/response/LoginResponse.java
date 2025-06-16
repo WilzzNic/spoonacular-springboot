@@ -1,4 +1,4 @@
-package com.example.spoonacular.dtos;
+package com.example.spoonacular.dtos.response;
 
 public class LoginResponse {
     private String token;
