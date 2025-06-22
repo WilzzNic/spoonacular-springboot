@@ -2,55 +2,83 @@ package com.example.spoonacular.exceptions;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ProblemDetail;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.example.spoonacular.dtos.dto.ResponseDto;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(Exception.class)
-    public ProblemDetail handleSecurityException(Exception exception) {
-        ProblemDetail errorDetail = null;
 
-        // TODO send this stack trace to an observability tool
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ResponseDto<Object>> handleBadCredentials(BadCredentialsException exception) {
         exception.printStackTrace();
 
-        if (exception instanceof BadCredentialsException) {
-            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(401), exception.getMessage());
-            errorDetail.setProperty("description", "The username or password is incorrect");
+        ResponseDto<Object> response = new ResponseDto<>();
+        response.setStatus(401);
+        response.setMessage("The username or password is incorrect");
 
-            return errorDetail;
-        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
 
-        if (exception instanceof AccountStatusException) {
-            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
-            errorDetail.setProperty("description", "The account is locked");
-        }
+    @ExceptionHandler(AccountStatusException.class)
+    public ResponseEntity<ResponseDto<Object>> handleAccountStatus(AccountStatusException exception) {
+        exception.printStackTrace();
 
-        if (exception instanceof AccessDeniedException) {
-            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
-            errorDetail.setProperty("description", "You are not authorized to access this resource");
-        }
+        ResponseDto<Object> response = new ResponseDto<>();
+        response.setStatus(403);
+        response.setMessage("The account is locked");
 
-        if (exception instanceof SignatureException) {
-            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
-            errorDetail.setProperty("description", "The JWT signature is invalid");
-        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
 
-        if (exception instanceof ExpiredJwtException) {
-            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
-            errorDetail.setProperty("description", "The JWT token has expired");
-        }
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ResponseDto<Object>> handleAccessDenied(AccessDeniedException exception) {
+        exception.printStackTrace();
 
-        if (errorDetail == null) {
-            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(500), exception.getMessage());
-            errorDetail.setProperty("description", "Unknown internal server error.");
-        }
+        ResponseDto<Object> response = new ResponseDto<>();
+        response.setStatus(403);
+        response.setMessage("You are not authorized to access this resource");
 
-        return errorDetail;
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
+    @ExceptionHandler(SignatureException.class)
+    public ResponseEntity<ResponseDto<Object>> handleSignature(SignatureException exception) {
+        exception.printStackTrace();
+
+        ResponseDto<Object> response = new ResponseDto<>();
+        response.setStatus(403);
+        response.setMessage("The JWT signature is invalid");
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ResponseDto<Object>> handleExpiredJwt(ExpiredJwtException exception) {
+        exception.printStackTrace();
+
+        ResponseDto<Object> response = new ResponseDto<>();
+        response.setStatus(403);
+        response.setMessage("The JWT token has expired");
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<com.example.spoonacular.dtos.dto.ResponseDto<Object>> handleGeneral(
+            Exception exception) {
+        exception.printStackTrace();
+
+        ResponseDto<Object> response = new ResponseDto<>();
+        response.setStatus(500);
+        response.setMessage("Unknown internal server error");
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }

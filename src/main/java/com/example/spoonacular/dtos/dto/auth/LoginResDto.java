@@ -1,6 +1,6 @@
-package com.example.spoonacular.dtos.response;
+package com.example.spoonacular.dtos.dto.auth;
 
-public class LoginResponse {
+public class LoginResDto {
     private String token;
 
     private long expiresIn;

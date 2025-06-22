@@ -5,8 +5,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.spoonacular.dtos.request.LoginUserDto;
-import com.example.spoonacular.dtos.request.RegisterUserDto;
+import com.example.spoonacular.dtos.dto.auth.LoginReqDto;
+import com.example.spoonacular.dtos.dto.auth.RegisterReqDto;
 import com.example.spoonacular.models.User;
 import com.example.spoonacular.repositories.UserRepository;
 
@@ -27,7 +27,7 @@ public class AuthenticationService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User signup(RegisterUserDto input) {
+    public User signup(RegisterReqDto input) {
         User user = new User();
         user.setUsername(input.getUsername());
         user.setFullName(input.getFullName());
@@ -37,7 +37,7 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
-    public User authenticate(LoginUserDto input) {
+    public User authenticate(LoginReqDto input) {
         authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(
                         input.getUsername(),

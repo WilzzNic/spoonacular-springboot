@@ -6,9 +6,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.spoonacular.dtos.request.LoginUserDto;
-import com.example.spoonacular.dtos.request.RegisterUserDto;
-import com.example.spoonacular.dtos.response.LoginResponse;
+import com.example.spoonacular.dtos.dto.ResponseDto;
+import com.example.spoonacular.dtos.dto.auth.LoginReqDto;
+import com.example.spoonacular.dtos.dto.auth.LoginResDto;
+import com.example.spoonacular.dtos.dto.auth.RegisterReqDto;
 import com.example.spoonacular.models.User;
 import com.example.spoonacular.services.AuthenticationService;
 import com.example.spoonacular.services.JwtService;
@@ -26,23 +27,25 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> register(@RequestBody RegisterUserDto registerUserDto) {
+    public ResponseEntity<User> register(@RequestBody RegisterReqDto registerUserDto) {
         User registeredUser = authenticationService.signup(registerUserDto);
 
         return ResponseEntity.ok(registeredUser);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
+    public ResponseEntity<ResponseDto<LoginResDto>> authenticate(@RequestBody LoginReqDto loginUserDto) {
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
 
         String jwtToken = jwtService.generateToken(authenticatedUser);
 
-        LoginResponse loginResponse = new LoginResponse();
+        LoginResDto loginResponse = new LoginResDto();
         loginResponse.setToken(jwtToken);
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
 
-        return ResponseEntity.ok(loginResponse);
+        ResponseDto<LoginResDto> apiResponse = ResponseDto.success(loginResponse, null);
+
+        return ResponseEntity.ok(apiResponse);
     }
 
 }

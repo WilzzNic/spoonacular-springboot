@@ -1,6 +1,6 @@
-package com.example.spoonacular.dtos.request;
+package com.example.spoonacular.dtos.dto.auth;
 
-public class RegisterUserDto {
+public class RegisterReqDto {
     private String username;
 
     private String email;

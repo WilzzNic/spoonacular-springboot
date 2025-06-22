@@ -1,6 +1,6 @@
-package com.example.spoonacular.dtos.request;
+package com.example.spoonacular.dtos.dto.auth;
 
-public class LoginUserDto {
+public class LoginReqDto {
     private String username;
 
     private String password;
