@@ -1,4 +1,6 @@
-package com.example.spoonacular.dtos.dto.auth;
+package com.example.spoonacular.dtos.auth;
+
+import jakarta.validation.constraints.NotBlank;
 
 public class LoginReqDto {
     private String username;

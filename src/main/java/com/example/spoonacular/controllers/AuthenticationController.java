@@ -6,44 +6,42 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.spoonacular.dtos.dto.ResponseDto;
-import com.example.spoonacular.dtos.dto.auth.LoginReqDto;
-import com.example.spoonacular.dtos.dto.auth.LoginResDto;
-import com.example.spoonacular.dtos.dto.auth.RegisterReqDto;
+import com.example.spoonacular.dtos.ResponseDto;
+import com.example.spoonacular.dtos.auth.LoginReqDto;
+import com.example.spoonacular.dtos.auth.LoginResDto;
+import com.example.spoonacular.dtos.auth.RegisterReqDto;
+import com.example.spoonacular.dtos.auth.RegisterResDto;
 import com.example.spoonacular.models.User;
 import com.example.spoonacular.services.AuthenticationService;
 import com.example.spoonacular.services.JwtService;
 
+import jakarta.validation.Valid;
+
 @RequestMapping("/auth")
 @RestController
 public class AuthenticationController {
-    private final JwtService jwtService;
+    
 
     private final AuthenticationService authenticationService;
 
-    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService) {
-        this.jwtService = jwtService;
+    public AuthenticationController(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> register(@RequestBody RegisterReqDto registerUserDto) {
-        User registeredUser = authenticationService.signup(registerUserDto);
+    public ResponseEntity<ResponseDto<RegisterResDto>> register(@Valid @RequestBody RegisterReqDto registerUserDto) {
+        RegisterResDto user = authenticationService.signup(registerUserDto);
 
-        return ResponseEntity.ok(registeredUser);
+        ResponseDto<RegisterResDto> value = ResponseDto.success(user, null);
+
+        return ResponseEntity.ok(value);
     }
 
     @PostMapping("/login")
     public ResponseEntity<ResponseDto<LoginResDto>> authenticate(@RequestBody LoginReqDto loginUserDto) {
-        User authenticatedUser = authenticationService.authenticate(loginUserDto);
+        LoginResDto value = authenticationService.authenticate(loginUserDto);
 
-        String jwtToken = jwtService.generateToken(authenticatedUser);
-
-        LoginResDto loginResponse = new LoginResDto();
-        loginResponse.setToken(jwtToken);
-        loginResponse.setExpiresIn(jwtService.getExpirationTime());
-
-        ResponseDto<LoginResDto> apiResponse = ResponseDto.success(loginResponse, null);
+        ResponseDto<LoginResDto> apiResponse = ResponseDto.success(value, null);
 
         return ResponseEntity.ok(apiResponse);
     }

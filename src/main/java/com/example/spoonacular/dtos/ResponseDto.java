@@ -1,4 +1,4 @@
-package com.example.spoonacular.dtos.dto;
+package com.example.spoonacular.dtos;
 
 import java.util.ArrayList;
 import java.util.List;

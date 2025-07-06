@@ -1,4 +1,4 @@
-package com.example.spoonacular.dtos.dto.auth;
+package com.example.spoonacular.dtos.auth;
 
 public class LoginResDto {
     private String token;
