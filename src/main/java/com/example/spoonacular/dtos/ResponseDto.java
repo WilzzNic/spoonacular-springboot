@@ -31,17 +31,17 @@ public class ResponseDto<T> {
         if (errors == null) {
             errors = new ArrayList<>();
         }
-        
+
         this.errors = errors;
     }
 
     // Static factory methods for success responses
-    public static <T> ResponseDto<T> success(T data, List<String> errors) {
-        return new ResponseDto<>(200, "Success", data, errors);
+    public static <T> ResponseDto<T> success(T data) {
+        return new ResponseDto<>(200, "Success", data, null);
     }
 
-    public static <T> ResponseDto<T> success(T data, String message, List<String> errors) {
-        return new ResponseDto<>(200, message, data, errors);
+    public static <T> ResponseDto<T> success(T data, String message) {
+        return new ResponseDto<>(200, message, data, null);
     }
 
     public static <T> ResponseDto<T> created(T data, List<String> errors) {
@@ -65,8 +65,8 @@ public class ResponseDto<T> {
         return new ResponseDto<>(400, message, null, errors);
     }
 
-    public static <T> ResponseDto<T> unauthorized(String message, List<String> errors) {
-        return new ResponseDto<>(401, message, null, errors);
+    public static <T> ResponseDto<T> unauthorized(String message) {
+        return new ResponseDto<>(401, message, null, null);
     }
 
     public static <T> ResponseDto<T> forbidden(String message, List<String> errors) {

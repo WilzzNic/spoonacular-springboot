@@ -1,7 +1,6 @@
 package com.example.spoonacular.services;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,6 +10,7 @@ import com.example.spoonacular.dtos.auth.LoginReqDto;
 import com.example.spoonacular.dtos.auth.LoginResDto;
 import com.example.spoonacular.dtos.auth.RegisterReqDto;
 import com.example.spoonacular.dtos.auth.RegisterResDto;
+import com.example.spoonacular.dtos.auth.TokenValidationResDto;
 import com.example.spoonacular.exceptions.CustomValidationExceptionHandler;
 import com.example.spoonacular.models.User;
 import com.example.spoonacular.repositories.UserRepository;
@@ -72,5 +72,37 @@ public class AuthenticationService {
         result.setExpiresIn(jwtService.getExpirationTime());
 
         return result;
+    }
+
+    public TokenValidationResDto validateToken(String token) {
+        // Remove "Bearer " prefix if present
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+
+        // Extract username from token first
+        String username = jwtService.extractUsername(token);
+
+        // Fetch user from database
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new CustomValidationExceptionHandler(HttpStatus.NOT_FOUND, "User not found"));
+
+        TokenValidationResDto result = new TokenValidationResDto();
+        result.setUsername(user.getUsername());
+        result.setFullName(user.getFullName());
+        result.setValid(jwtService.isTokenValid(token, user));
+
+        return result;
+    }
+
+    public String getUsernameFromToken(String token) {
+        try {
+            if (token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            }
+            return jwtService.extractUsername(token);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
